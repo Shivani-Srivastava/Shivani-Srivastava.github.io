@@ -11,30 +11,32 @@ redirect_from:
 
 Education
 ======
-* B.S. in GitHub, GitHub University, 2012
-* M.S. in Jekyll, GitHub University, 2014
-* Ph.D in Version Control Theory, GitHub University, 2018 (expected)
+* B.A. (Hons) in Economics, Banaras Hindu University, (2019) 
+  * Minors in Mathematics and Statistics
+* M.Sc. in Economics, TERI School of Advanced Studies, (2021)
+  * Independent Thesis : Valuation of Recreation using Crowdsourced Travel Cost Model
+
 
 Work experience
 ======
-* Summer 2015: Research Assistant
-  * Github University
-  * Duties included: Tagging issues
-  * Supervisor: Professor Git
+* Summer 2020: Research Intern
+  * Ashoka Trust for Research in Envrionment and Ecology
+  * Project: The Scope of International Adoption of UN’s System of Environment Economic Accounting
+  * Supervisor: Professor Nandan Nawn
 
-* Fall 2015: Research Assistant
-  * Github University
-  * Duties included: Merging pull requests
-  * Supervisor: Professor Hub
+* Fall 2021 - Present : Research Assistant
+  * Indian School of Business, Hyderabad
+  * Exploring ML and AI applications in Marketing
+  * Supervisor: Professor Sudhir Voleti
   
 Skills
 ======
-* Skill 1
-* Skill 2
-  * Sub-skill 2.1
-  * Sub-skill 2.2
-  * Sub-skill 2.3
-* Skill 3
+* Python
+  * Streamlit
+* R
+  * Shiny
+  * Markdown
+* Media Manipulation
 
 Publications
 ======
@@ -54,6 +56,3 @@ Teaching
     {% include archive-single-cv.html %}
   {% endfor %}</ul>
   
-Service and leadership
-======
-* Currently signed in to 43 different slack teams

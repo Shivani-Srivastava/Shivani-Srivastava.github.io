@@ -10,7 +10,7 @@ locale                   : "en-US"
 title                    : "Shivani Srivastava"
 title_separator          : "-"
 name                     : &name "Shivani Srivastava"
-description              : &description "Research Assistant in Marketing Area at Indian School of Business, Hyderabad"
+description              : &description "Research Intern in Clean Air Team at CEEW, New Delhi"
 url                      : https://Shivani-Srivastava.github.io # the base hostname & protocol for your site e.g. "https://mmistakes.github.io"
 baseurl                  : "" # the subpath of your site, e.g. "/blog"
 repository               : "Shivani-Srivastava.github.io"
@@ -81,9 +81,9 @@ analytics:
 # Site Author
 author:
   name             : "Shivani Srivastava"
-  avatar           : "profile.png"
-  bio              : "Quantitative Marketing RA @ ISB"
-  location         : "Hyderabad, India"
+  avatar           : "DSC_9120.JPG"
+  bio              : "Data Research Analyst"
+  location         : "New Delhi, India"
   employer         :
   pubmed           : 
   googlescholar    : 

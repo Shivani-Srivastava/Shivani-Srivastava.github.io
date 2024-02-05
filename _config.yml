@@ -10,7 +10,7 @@ locale                   : "en-US"
 title                    : "Shivani Srivastava"
 title_separator          : "-"
 name                     : &name "Shivani Srivastava"
-description              : &description "Research Intern in Clean Air Team at CEEW, New Delhi"
+description              : &description "Data Chef"
 url                      : https://Shivani-Srivastava.github.io # the base hostname & protocol for your site e.g. "https://mmistakes.github.io"
 baseurl                  : "" # the subpath of your site, e.g. "/blog"
 repository               : "Shivani-Srivastava.github.io"
@@ -81,8 +81,8 @@ analytics:
 # Site Author
 author:
   name             : "Shivani Srivastava"
-  avatar           : "DSC_9120.JPG"
-  bio              : "Data Research Analyst"
+  avatar           : "DSC_9120-min.JPG"
+  bio              : "Research Intern in Clean Air Team at CEEW, New Delhi"
   location         : "New Delhi, India"
   employer         :
   pubmed           : 

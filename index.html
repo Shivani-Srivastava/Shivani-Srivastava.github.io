@@ -1,0 +1,614 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+<title>shivani98</title>
+<style>
+  * { box-sizing: border-box; }
+  html, body {
+    margin: 0; padding: 0;
+    height: 100%;
+    background: #008080;
+    font-family: Tahoma, "MS Sans Serif", Arial, sans-serif;
+    font-size: 12px;
+    overflow: hidden;
+  }
+  #desktop {
+    position: relative;
+    width: 100%;
+    height: calc(100% - 30px);
+    overflow: hidden;
+  }
+
+  /* ---------- Desktop icons ---------- */
+  .icon {
+    position: absolute;
+    width: 74px;
+    text-align: center;
+    color: #fff;
+    text-shadow: 1px 1px 0 #000;
+    font-size: 11px;
+    cursor: pointer;
+    user-select: none;
+    padding: 4px;
+  }
+  .icon:hover, .icon:focus { outline: 1px dotted #fff; }
+  .icon .glyph { font-size: 30px; line-height: 1; margin-bottom: 4px; }
+  .icon-about     { top: 20px;  left: 20px; }
+  .icon-work      { top: 130px; left: 20px; }
+  .icon-career    { top: 240px; left: 20px; }
+  .icon-education { top: 350px; left: 20px; }
+  .icon-trash     { top: 460px; left: 20px; }
+
+  /* ---------- Windows ---------- */
+  .window {
+    position: absolute;
+    background: #c0c0c0;
+    border-style: solid;
+    border-width: 2px;
+    border-color: #dfdfdf #000 #000 #dfdfdf;
+    box-shadow: inset -1px -1px 0 0 #0a0a0a, inset 1px 1px 0 0 #fff,
+                inset -2px -2px 0 0 #808080, inset 2px 2px 0 0 #dfdfdf;
+    padding: 3px;
+    z-index: 5;
+  }
+  .win-about     { width: 420px; top: 40px;  left: 130px; }
+  .win-work      { width: 460px; top: 80px;  left: 420px; }
+  .win-career    { width: 360px; top: 340px; left: 420px; display: none; }
+  .win-education { width: 380px; top: 120px; left: 200px; display: none; }
+  .win-trash     { width: 480px; top: 100px; left: 260px; display: none; }
+  .win-wip       { width: 320px; top: 160px; left: 500px; display: none; }
+  .window.win-maximized .window-body { max-height: 62vh; }
+
+  .title-bar {
+    background: linear-gradient(90deg, #000080, #1084d0);
+    color: #fff;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 3px 4px;
+    font-weight: bold;
+    font-size: 12px;
+    margin-bottom: 4px;
+    cursor: move;
+  }
+  .title-bar-text { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; display: flex; align-items: center; gap: 6px; }
+  .title-bar-controls { display: flex; gap: 2px; flex-shrink: 0; }
+
+  /* ---- Window control buttons: CSS-drawn icons, all sharing an identical
+     8x8 bounding box so minimize/maximize/close line up perfectly regardless
+     of what shape sits inside them. No font glyphs (their baked-in baseline/
+     descender offsets are exactly why the old underscore looked too low). ---- */
+  .title-bar-controls button {
+    width: 18px; height: 16px;
+    padding: 0;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    background: #c0c0c0;
+    border-style: solid; border-width: 1px;
+    border-color: #fff #000 #000 #fff;
+    cursor: pointer;
+  }
+  .title-bar-controls button:active { border-color: #000 #fff #fff #000; }
+  .btn-box { width: 8px; height: 8px; display: flex; align-items: center; justify-content: center; }
+  .icon-minimize { width: 8px; height: 8px; display: flex; align-items: flex-end; }
+  .icon-minimize span { display: block; width: 8px; height: 2px; background: #000; }
+  .icon-maximize { width: 7px; height: 7px; border: 1.4px solid #000; box-sizing: border-box; }
+  .icon-close { position: relative; width: 8px; height: 8px; }
+  .icon-close::before, .icon-close::after {
+    content: ''; position: absolute; top: 50%; left: 0;
+    width: 100%; height: 1.4px; background: #000;
+  }
+  .icon-close::before { transform: rotate(45deg); }
+  .icon-close::after { transform: rotate(-45deg); }
+
+  .window-body { padding: 8px; max-height: 320px; overflow-y: auto; -webkit-overflow-scrolling: touch; }
+  .window-body p { margin: 0 0 8px; line-height: 1.5; }
+
+  fieldset { border: 1px solid; border-color: #808080 #fff #fff #808080; margin: 8px 0 0; padding: 8px 6px 6px; }
+  legend { font-size: 11px; padding: 0 4px; }
+  .field-row-stacked { display: flex; flex-direction: column; gap: 2px; margin-bottom: 8px; }
+  .field-row-stacked:last-child { margin-bottom: 0; }
+  .field-row-stacked label { font-size: 11px; }
+  .field-row { display: flex; gap: 6px; align-items: center; justify-content: flex-end; margin-top: 10px; }
+
+  input[type="text"] {
+    border-style: solid; border-width: 1px;
+    border-color: #808080 #fff #fff #808080;
+    background: #fff;
+    padding: 3px 4px;
+    font-size: 12px;
+    font-family: inherit;
+    width: 100%;
+  }
+
+  button.win-action {
+    background: #c0c0c0;
+    border-style: solid; border-width: 2px;
+    border-color: #fff #000 #000 #fff;
+    padding: 3px 10px;
+    font-size: 12px;
+    font-family: inherit;
+    cursor: pointer;
+  }
+  button.win-action:active { border-color: #000 #fff #fff #000; }
+
+  .proj-item { border-bottom: 1px solid #808080; padding: 6px 2px; }
+  .proj-item:last-child { border-bottom: none; }
+  .proj-tag { display: inline-block; background: navy; color: #fff; font-size: 10px; padding: 1px 5px; margin-bottom: 3px; }
+  .proj-item b { display: block; font-size: 12px; margin-bottom: 2px; }
+  .proj-item .meta { font-size: 10px; color: #444; display: block; margin-top: 3px; }
+
+  #pdf-frame { width: 100%; height: 420px; border: 1px solid #808080; background: #fff; }
+  .pdf-fallback { font-size: 11px; margin-top: 6px; }
+
+  /* ---- Work-in-progress alert (styled like a real Windows message box: no minimize/maximize) ---- */
+  .alert-body { display: flex; gap: 14px; align-items: flex-start; padding: 6px 4px; }
+  .alert-icon {
+    width: 32px; height: 32px; flex-shrink: 0;
+    border-radius: 50%;
+    background: #ffcc00;
+    display: flex; align-items: center; justify-content: center;
+    font-weight: bold; font-size: 20px; color: #000;
+    border: 1px solid #806000;
+  }
+  .alert-actions { display: flex; justify-content: center; margin-top: 14px; }
+
+  #taskbar {
+    position: fixed;
+    bottom: 0; left: 0; right: 0;
+    height: 30px;
+    background: #c0c0c0;
+    border-top: 1px solid #fff;
+    display: flex;
+    align-items: center;
+    padding: 2px 4px;
+    z-index: 100;
+    gap: 4px;
+  }
+  #start-btn { font-weight: bold; padding: 3px 10px 3px 6px; }
+  #taskbar-sep { width: 2px; height: 24px; border-left: 1px solid #808080; border-right: 1px solid #fff; }
+  #task-buttons { display: flex; gap: 3px; flex: 1; overflow-x: auto; }
+  .task-btn { min-width: 120px; max-width: 160px; text-align: left; font-size: 11px; padding: 2px 6px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  #clock {
+    padding: 4px 10px;
+    border-style: solid; border-width: 1px;
+    border-color: #808080 #fff #fff #808080;
+    font-size: 11px;
+    background: #c0c0c0;
+    min-width: 60px;
+    text-align: center;
+  }
+
+  #start-menu {
+    position: fixed;
+    bottom: 30px; left: 2px;
+    width: 200px;
+    z-index: 200;
+    display: none;
+    background: #c0c0c0;
+    border-style: solid; border-width: 2px;
+    border-color: #dfdfdf #000 #000 #dfdfdf;
+    padding: 2px;
+  }
+  #start-menu.open { display: block; }
+  #start-menu ul { list-style: none; margin: 0; padding: 0; }
+  #start-menu li a {
+    display: flex; align-items: center; gap: 8px;
+    padding: 5px 8px;
+    text-decoration: none;
+    color: #000;
+    font-size: 12px;
+  }
+  #start-menu li a:hover { background: navy; color: #fff; }
+  #start-menu li.sep { border-top: 1px solid #808080; margin-top: 2px; padding-top: 2px; }
+
+  #boot-screen {
+    position: fixed; inset: 0;
+    background: #000; color: #fff;
+    font-family: "Courier New", monospace;
+    font-size: 13px;
+    padding: 24px;
+    z-index: 999;
+    white-space: pre-wrap;
+  }
+
+  ::-webkit-scrollbar { width: 16px; }
+  ::-webkit-scrollbar-track { background: #dfdfdf; }
+  ::-webkit-scrollbar-thumb { background: #c0c0c0; border: 1px solid; border-color: #fff #808080 #808080 #fff; }
+
+  /* ================= MOBILE LAYOUT ================= */
+  @media (max-width: 800px) {
+    html, body { overflow: auto; }
+    #desktop {
+      height: auto;
+      min-height: calc(100vh - 30px);
+      overflow: visible;
+      padding: 12px 12px 90px;
+    }
+    .icon {
+      position: static;
+      display: inline-flex;
+      flex-direction: column;
+      align-items: center;
+      width: 30%;
+      min-height: 44px;
+      justify-content: center;
+      padding: 8px 2px;
+    }
+    #icon-grid { display: flex; flex-wrap: wrap; gap: 6px 2%; margin-bottom: 16px; }
+
+    .window {
+      position: static !important;
+      width: 100% !important;
+      max-width: 100%;
+      margin-bottom: 14px;
+      display: none;
+    }
+    .window.mobile-open { display: block !important; }
+    .title-bar { cursor: default; }
+    .window-body { max-height: none; overflow-y: visible; }
+
+    /* Maximize doesn't mean anything once windows are already full-width stacked blocks */
+    .btn-maximize { display: none; }
+
+    .title-bar-controls button { width: 28px; height: 24px; }
+    .icon-minimize, .icon-maximize, .icon-close, .btn-box { transform: scale(1.3); }
+    button.win-action { padding: 8px 14px; font-size: 13px; }
+    #start-btn { padding: 8px 14px; }
+    .task-btn { min-width: 90px; padding: 6px 8px; }
+    #clock { padding: 8px 10px; }
+    #taskbar { height: 38px; }
+    input[type="text"] { padding: 8px 6px; }
+  }
+</style>
+</head>
+<body>
+
+<div id="boot-screen">Starting Shivani98...</div>
+<script>
+  setTimeout(function() {
+    var b = document.getElementById('boot-screen');
+    if (b) b.style.display = 'none';
+  }, 1200);
+</script>
+
+<div id="desktop">
+
+  <div id="icon-grid">
+    <div class="icon icon-about" onclick="handleIconTap('about')">
+      <div class="glyph">📄</div>about_me.txt
+    </div>
+    <div class="icon icon-work" onclick="handleIconTap('work')">
+      <div class="glyph">🗂️</div>projects
+    </div>
+    <div class="icon icon-career" onclick="handleIconTap('career')">
+      <div class="glyph">💼</div>career.exe
+    </div>
+    <div class="icon icon-education" onclick="handleIconTap('education')">
+      <div class="glyph">🎓</div>education.txt
+    </div>
+    <div class="icon icon-trash" onclick="handleIconTap('trash')">
+      <div class="glyph">🗑️</div>Recycle Bin
+    </div>
+  </div>
+
+  <div class="window win-about" id="win-about">
+    <div class="title-bar">
+      <div class="title-bar-text">about_me.txt - Notepad</div>
+      <div class="title-bar-controls">
+        <button aria-label="Minimize" onclick="minimizeWin('about')"><span class="icon-minimize"><span></span></span></button>
+        <button class="btn-maximize" aria-label="Maximize" onclick="toggleMaximize('about')"><span class="icon-maximize"></span></button>
+        <button aria-label="Close" onclick="closeWin('about')"><span class="icon-close"></span></button>
+      </div>
+    </div>
+    <div class="window-body">
+      <p><b>SHIVANI SRIVASTAVA</b><br>Senior Data Scientist &mdash; New Delhi, India</p>
+      <p>I collect strange questions and try to answer them with data. 5+ years building applied machine learning, GenAI, and behavioral-analytics systems across financial services, executive research, and environmental policy &mdash; risk models influencing collections workflows worth roughly $950M, early-warning systems built from satellite imagery, causal-inference studies on public policy interventions.</p>
+      <p>At Genpact I lead a team of 5 data scientists building risk classification, propensity-to-pay, and contact-strategy models across 6 enterprise clients. Before that, at ISB, I ran behavioral research spanning eye-tracking studies, long-form interviews, and Bayesian text analysis, while mentoring 12 interns.</p>
+      <p>My roots are in economics &mdash; an MSc in Environmental and Natural Resource Economics, with field research spanning air-pollution early-warning systems to causal evaluation of policy interventions.</p>
+      <fieldset>
+        <legend>Focus</legend>
+        <div class="field-row-stacked"><label>ML &middot; NLP &middot; Generative AI &middot; Decision Intelligence</label></div>
+      </fieldset>
+      <fieldset>
+        <legend>Reach me</legend>
+        <div class="field-row-stacked"><label>shivani.srvstv.work@gmail.com &middot; github.com/Shivani-Srivastava</label></div>
+      </fieldset>
+    </div>
+  </div>
+
+  <div class="window win-work" id="win-work">
+    <div class="title-bar">
+      <div class="title-bar-text">C:\projects</div>
+      <div class="title-bar-controls">
+        <button aria-label="Minimize" onclick="minimizeWin('work')"><span class="icon-minimize"><span></span></span></button>
+        <button class="btn-maximize" aria-label="Maximize" onclick="toggleMaximize('work')"><span class="icon-maximize"></span></button>
+        <button aria-label="Close" onclick="closeWin('work')"><span class="icon-close"></span></button>
+      </div>
+    </div>
+    <div class="window-body">
+      <div class="proj-item">
+        <span class="proj-tag">ML SYSTEMS</span>
+        <b>Collections risk &amp; propensity models</b>
+        Led a team of 5 building XGBoost and clustering-based risk classification, propensity-to-pay, and contact-strategy models across 6 enterprise clients &mdash; informing collections workflows tied to roughly $950M in enterprise revenue.
+        <span class="meta">Genpact &middot; 2024&ndash;2026</span>
+      </div>
+      <div class="proj-item">
+        <span class="proj-tag">DATA ENGINEERING</span>
+        <b>Entity resolution across power-plant databases</b>
+        Performed entity resolution across 6 disparate power-plant databases, identifying and linking duplicate and related records into a single canonical view.
+        <span class="meta">Genpact &middot; 2024&ndash;2026</span>
+      </div>
+      <div class="proj-item">
+        <span class="proj-tag">GEOSPATIAL</span>
+        <b>Air-pollution early-warning dashboard</b>
+        Built an early-warning dashboard for domestic air pollution across Delhi NCR from satellite and geospatial data via Google Earth Engine. Applied Synthetic Control methodology to evaluate the causal efficacy of Delhi's GRAP scheme.
+        <span class="meta">CEEW &middot; Feb&ndash;Mar 2024</span>
+      </div>
+      <div class="proj-item">
+        <span class="proj-tag">BEHAVIORAL RESEARCH</span>
+        <b>Consumer behavior &amp; cognitive bias research</b>
+        Ran eye-tracking studies on advertisement engagement, long-form interviews on career transitions, and Bayesian text-sequencing analysis of stereotype-formation mechanisms; mentored a 12-person intern cohort.
+        <span class="meta">ISB &middot; 2021&ndash;2024</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="window win-career" id="win-career">
+    <div class="title-bar">
+      <div class="title-bar-text">career.exe &mdash; Properties</div>
+      <div class="title-bar-controls">
+        <button aria-label="Minimize" onclick="minimizeWin('career')"><span class="icon-minimize"><span></span></span></button>
+        <button class="btn-maximize" aria-label="Maximize" onclick="toggleMaximize('career')"><span class="icon-maximize"></span></button>
+        <button aria-label="Close" onclick="closeWin('career')"><span class="icon-close"></span></button>
+      </div>
+    </div>
+    <div class="window-body">
+      <fieldset>
+        <legend>Trajectory</legend>
+        <div class="field-row-stacked">
+          <label><b>Genpact</b><br>May 2024 &ndash; Jul 2026 &middot; Gurugram, India</label>
+          <label style="font-size:10px; color:#333; margin-top:2px;">Business Analyst &rarr; Data Scientist &rarr; Data Engineer</label>
+        </div>
+        <div class="field-row-stacked"><label><b>Research Intern</b> &middot; CEEW<br>Feb &ndash; Mar 2024 &middot; New Delhi, India</label></div>
+        <div class="field-row-stacked"><label><b>Research Assistant</b> &middot; ISB<br>Sep 2021 &ndash; Jan 2024 &middot; Hyderabad, India</label></div>
+      </fieldset>
+      <fieldset>
+        <legend>Stack</legend>
+        <p style="margin:4px 0 0; font-size:11px;">Python &middot; R &middot; SQL &middot; Scikit-learn &middot; XGBoost &middot; Pandas &middot; Streamlit &middot; Shiny &middot; Power BI &middot; Tableau &middot; Google Earth Engine &middot; Knowledge Graphs &middot; AWS</p>
+      </fieldset>
+      <fieldset>
+        <legend>Leadership</legend>
+        <div class="field-row-stacked"><label>Leads a team of 5 Data Scientists &mdash; Genpact</label></div>
+        <div class="field-row-stacked"><label>Mentored 12 interns &mdash; ISB</label></div>
+      </fieldset>
+    </div>
+  </div>
+
+  <div class="window win-education" id="win-education">
+    <div class="title-bar">
+      <div class="title-bar-text">education.txt - Notepad</div>
+      <div class="title-bar-controls">
+        <button aria-label="Minimize" onclick="minimizeWin('education')"><span class="icon-minimize"><span></span></span></button>
+        <button class="btn-maximize" aria-label="Maximize" onclick="toggleMaximize('education')"><span class="icon-maximize"></span></button>
+        <button aria-label="Close" onclick="closeWin('education')"><span class="icon-close"></span></button>
+      </div>
+    </div>
+    <div class="window-body">
+      <fieldset>
+        <legend>Degrees</legend>
+        <div class="field-row-stacked"><label>PG Diploma, Data Science &mdash; IIIT Delhi (2024&ndash;25)</label></div>
+        <div class="field-row-stacked"><label>M.Sc. Environmental and Natural Resource Economics &mdash; TERI SAS (2019&ndash;21)</label></div>
+        <div class="field-row-stacked"><label>B.A. (Hons.) Economics &mdash; Banaras Hindu University (2016&ndash;19)</label></div>
+      </fieldset>
+    </div>
+  </div>
+
+  <div class="window win-trash" id="win-trash">
+    <div class="title-bar">
+      <div class="title-bar-text">Recycle Bin &mdash; cv-of-failures.pdf</div>
+      <div class="title-bar-controls">
+        <button aria-label="Minimize" onclick="minimizeWin('trash')"><span class="icon-minimize"><span></span></span></button>
+        <button class="btn-maximize" aria-label="Maximize" onclick="toggleMaximize('trash')"><span class="icon-maximize"></span></button>
+        <button aria-label="Close" onclick="closeWin('trash')"><span class="icon-close"></span></button>
+      </div>
+    </div>
+    <div class="window-body">
+      <p style="margin-bottom:8px;">Not everything makes the highlight reel. This is the rest of it.</p>
+      <embed id="pdf-frame" src="assets/cv-of-failures.pdf" type="application/pdf">
+      <p class="pdf-fallback">If the preview above is blank (common on mobile browsers), <a href="assets/cv-of-failures.pdf" target="_blank">open the PDF directly</a>.</p>
+    </div>
+  </div>
+
+  <!-- Work-in-progress alert: Start-menu only, no desktop icon. Styled like a real
+       Windows message box, so only a close button — minimize/maximize don't apply
+       to a modal alert. -->
+  <div class="window win-wip" id="win-wip">
+    <div class="title-bar">
+      <div class="title-bar-text">Alert</div>
+      <div class="title-bar-controls">
+        <button aria-label="Close" onclick="closeWin('wip')"><span class="icon-close"></span></button>
+      </div>
+    </div>
+    <div class="window-body">
+      <div class="alert-body">
+        <div class="alert-icon">!</div>
+        <div>
+          <p style="margin:0 0 4px;"><b>Work in Progress</b></p>
+          <p style="margin:0;">This section isn't ready yet &mdash; check back soon.</p>
+        </div>
+      </div>
+      <div class="alert-actions">
+        <button class="win-action" onclick="closeWin('wip')">OK</button>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<div id="start-menu">
+  <ul>
+    <li><a href="#" onclick="handleIconTap('about'); toggleStart(); return false;">📄 about_me.txt</a></li>
+    <li><a href="#" onclick="handleIconTap('work'); toggleStart(); return false;">🗂️ projects</a></li>
+    <li><a href="#" onclick="handleIconTap('career'); toggleStart(); return false;">💼 career.exe</a></li>
+    <li><a href="#" onclick="handleIconTap('education'); toggleStart(); return false;">🎓 education.txt</a></li>
+    <li><a href="#" onclick="handleIconTap('trash'); toggleStart(); return false;">🗑️ Recycle Bin</a></li>
+    <li class="sep"><a href="#" onclick="handleIconTap('wip'); toggleStart(); return false;">🖌️ Paint</a></li>
+    <li class="sep"><a href="https://linkedin.com/in/shivanisrvstv" target="_blank">🔗 LinkedIn</a></li>
+    <li><a href="https://github.com/Shivani-Srivastava" target="_blank">🌐 GitHub profile</a></li>
+  </ul>
+</div>
+
+<div id="taskbar">
+  <button id="start-btn" onclick="toggleStart()">⊞ Start</button>
+  <div id="taskbar-sep"></div>
+  <div id="task-buttons"></div>
+  <div id="clock">--:--</div>
+</div>
+
+<script>
+  var winOrder = ['about','work','career','education','trash','wip'];
+  var winTitles = { about: 'about_me.txt', work: 'projects', career: 'career.exe', education: 'education.txt', trash: 'Recycle Bin', wip: 'Alert' };
+  var openWindows = {};
+  var zTop = 10;
+  var reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+  function isMobile() { return window.matchMedia('(max-width: 800px)').matches; }
+
+  function renderTaskButtons() {
+    var container = document.getElementById('task-buttons');
+    container.innerHTML = '';
+    winOrder.forEach(function(id) {
+      if (!openWindows[id]) return;
+      var btn = document.createElement('button');
+      btn.className = 'task-btn';
+      btn.textContent = winTitles[id];
+      btn.onclick = function() { toggleMinimize(id); };
+      container.appendChild(btn);
+    });
+  }
+
+  function bringToFront(id) {
+    zTop++;
+    var el = document.getElementById('win-' + id);
+    if (el) el.style.zIndex = zTop;
+  }
+
+  function openWin(id) {
+    var el = document.getElementById('win-' + id);
+    el.style.display = 'block';
+    el.classList.add('mobile-open');
+    openWindows[id] = true;
+    bringToFront(id);
+    renderTaskButtons();
+  }
+
+  function closeWin(id) {
+    var el = document.getElementById('win-' + id);
+    el.style.display = 'none';
+    el.classList.remove('mobile-open');
+    delete openWindows[id];
+    renderTaskButtons();
+  }
+
+  function minimizeWin(id) {
+    var el = document.getElementById('win-' + id);
+    el.style.display = 'none';
+    el.classList.remove('mobile-open');
+  }
+
+  function toggleMinimize(id) {
+    var el = document.getElementById('win-' + id);
+    if (el.style.display === 'none') {
+      openWin(id);
+      if (isMobile()) el.scrollIntoView({ behavior: reduceMotion ? 'auto' : 'smooth', block: 'start' });
+    } else {
+      minimizeWin(id);
+    }
+  }
+
+  function toggleMaximize(id) {
+    if (isMobile()) return;
+    var el = document.getElementById('win-' + id);
+    var maximized = el.getAttribute('data-maximized') === 'true';
+    if (maximized) {
+      el.style.top = el.getAttribute('data-prev-top');
+      el.style.left = el.getAttribute('data-prev-left');
+      el.style.width = el.getAttribute('data-prev-width');
+      el.classList.remove('win-maximized');
+      el.setAttribute('data-maximized', 'false');
+    } else {
+      el.setAttribute('data-prev-top', el.style.top);
+      el.setAttribute('data-prev-left', el.style.left);
+      el.setAttribute('data-prev-width', el.style.width);
+      el.style.top = '10px';
+      el.style.left = '10px';
+      el.style.width = 'calc(100% - 20px)';
+      el.classList.add('win-maximized');
+      el.setAttribute('data-maximized', 'true');
+    }
+    bringToFront(id);
+  }
+
+  function handleIconTap(id) {
+    openWin(id);
+    if (isMobile()) {
+      var el = document.getElementById('win-' + id);
+      setTimeout(function() {
+        el.scrollIntoView({ behavior: reduceMotion ? 'auto' : 'smooth', block: 'start' });
+      }, 30);
+    }
+  }
+
+  function toggleStart() {
+    document.getElementById('start-menu').classList.toggle('open');
+  }
+  document.addEventListener('click', function(e) {
+    var menu = document.getElementById('start-menu');
+    var btn = document.getElementById('start-btn');
+    if (menu.classList.contains('open') && !menu.contains(e.target) && e.target !== btn) {
+      menu.classList.remove('open');
+    }
+  });
+
+  function makeDraggable(winEl) {
+    var titleBar = winEl.querySelector('.title-bar');
+    var dragging = false, offX = 0, offY = 0;
+    titleBar.addEventListener('mousedown', function(e) {
+      if (isMobile()) return;
+      if (e.target.closest('button')) return;
+      dragging = true;
+      var rect = winEl.getBoundingClientRect();
+      offX = e.clientX - rect.left;
+      offY = e.clientY - rect.top;
+      bringToFront(winEl.id.replace('win-', ''));
+      e.preventDefault();
+    });
+    document.addEventListener('mousemove', function(e) {
+      if (!dragging || isMobile()) return;
+      winEl.style.left = Math.max(0, e.clientX - offX) + 'px';
+      winEl.style.top = Math.max(0, e.clientY - offY) + 'px';
+    });
+    document.addEventListener('mouseup', function() { dragging = false; });
+  }
+  document.querySelectorAll('.window').forEach(makeDraggable);
+  document.querySelectorAll('.window').forEach(function(w) {
+    w.addEventListener('mousedown', function() { if (!isMobile()) bringToFront(w.id.replace('win-', '')); });
+  });
+
+  function updateClock() {
+    var now = new Date();
+    var h = now.getHours() % 12 || 12;
+    var m = String(now.getMinutes()).padStart(2, '0');
+    var ampm = now.getHours() >= 12 ? 'PM' : 'AM';
+    document.getElementById('clock').textContent = h + ':' + m + ' ' + ampm;
+  }
+  updateClock();
+  setInterval(updateClock, 10000);
+</script>
+
+</body>
+</html>

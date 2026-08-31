@@ -3,7 +3,11 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
-<title>shivani98</title>
+<title>Shivani's Desktop</title>
+
+<script data-goatcounter="https://shivanisrvstv.goatcounter.com/count"
+        async src="//gc.zgo.at/count.js"></script>
+
 <style>
   * { box-sizing: border-box; }
   html, body {
@@ -11,7 +15,7 @@
     height: 100%;
     background: #008080;
     font-family: Tahoma, "MS Sans Serif", Arial, sans-serif;
-    font-size: 12px;
+    font-size: 16px;
     overflow: hidden;
   }
   #desktop {
@@ -28,7 +32,7 @@
     text-align: center;
     color: #fff;
     text-shadow: 1px 1px 0 #000;
-    font-size: 11px;
+    font-size: 15px;
     cursor: pointer;
     user-select: none;
     padding: 4px;
@@ -54,12 +58,13 @@
     z-index: 5;
   }
   .win-about     { width: 420px; top: 40px;  left: 130px; }
-  .win-work      { width: 460px; top: 80px;  left: 420px; }
+  .win-work      { width: 640px; top: 60px;  left: 380px; }
   .win-career    { width: 360px; top: 340px; left: 420px; display: none; }
   .win-education { width: 380px; top: 120px; left: 200px; display: none; }
   .win-trash     { width: 480px; top: 100px; left: 260px; display: none; }
   .win-wip       { width: 320px; top: 160px; left: 500px; display: none; }
-  .window.win-maximized .window-body { max-height: 62vh; }
+  .window.win-maximized { display: flex; flex-direction: column; }
+  .window.win-maximized .window-body { flex: 1; max-height: none; overflow-y: auto; }
 
   .title-bar {
     background: linear-gradient(90deg, #000080, #1084d0);
@@ -69,7 +74,7 @@
     justify-content: space-between;
     padding: 3px 4px;
     font-weight: bold;
-    font-size: 12px;
+    font-size: 16px;
     margin-bottom: 4px;
     cursor: move;
   }
@@ -108,10 +113,10 @@
   .window-body p { margin: 0 0 8px; line-height: 1.5; }
 
   fieldset { border: 1px solid; border-color: #808080 #fff #fff #808080; margin: 8px 0 0; padding: 8px 6px 6px; }
-  legend { font-size: 11px; padding: 0 4px; }
+  legend { font-size: 15px; padding: 0 4px; }
   .field-row-stacked { display: flex; flex-direction: column; gap: 2px; margin-bottom: 8px; }
   .field-row-stacked:last-child { margin-bottom: 0; }
-  .field-row-stacked label { font-size: 11px; }
+  .field-row-stacked label { font-size: 15px; }
   .field-row { display: flex; gap: 6px; align-items: center; justify-content: flex-end; margin-top: 10px; }
 
   input[type="text"] {
@@ -119,7 +124,7 @@
     border-color: #808080 #fff #fff #808080;
     background: #fff;
     padding: 3px 4px;
-    font-size: 12px;
+    font-size: 16px;
     font-family: inherit;
     width: 100%;
   }
@@ -129,20 +134,57 @@
     border-style: solid; border-width: 2px;
     border-color: #fff #000 #000 #fff;
     padding: 3px 10px;
-    font-size: 12px;
+    font-size: 16px;
     font-family: inherit;
     cursor: pointer;
   }
   button.win-action:active { border-color: #000 #fff #fff #000; }
+  button.win-action:disabled {
+    color: #808080;
+    text-shadow: 1px 1px 0 #fff;
+    cursor: not-allowed;
+  }
 
-  .proj-item { border-bottom: 1px solid #808080; padding: 6px 2px; }
-  .proj-item:last-child { border-bottom: none; }
-  .proj-tag { display: inline-block; background: navy; color: #fff; font-size: 10px; padding: 1px 5px; margin-bottom: 3px; }
-  .proj-item b { display: block; font-size: 12px; margin-bottom: 2px; }
-  .proj-item .meta { font-size: 10px; color: #444; display: block; margin-top: 3px; }
+  .intro {
+    border: 1px solid; border-color: #808080 #fff #fff #808080;
+    background: #dfdfdf; padding: 8px; margin-bottom: 10px;
+  }
+  .intro b { font-size: 17px; }
+  .intro p { margin: 5px 0 0; line-height: 1.45; }
+
+  .project {
+    background: #efefef;
+    border: 1px solid; border-color: #fff #808080 #808080 #fff;
+    padding: 8px; margin-bottom: 8px;
+  }
+  .project:last-child { margin-bottom: 0; }
+  .project-head { display: flex; gap: 9px; align-items: flex-start; }
+  .file-icon {
+    width: 34px; height: 40px; flex: 0 0 34px;
+    background: #fff; border: 1px solid #000; position: relative;
+    padding-top: 19px; text-align: center; font-size: 13px; font-weight: bold;
+  }
+  .file-icon::before {
+    content: ''; position: absolute; right: -1px; top: -1px;
+    width: 10px; height: 10px; background: #c0c0c0;
+    border-left: 1px solid #000; border-bottom: 1px solid #000;
+  }
+  .project-main { flex: 1; min-width: 0; }
+  .project-question { font-size: 17px; font-weight: bold; margin-bottom: 3px; }
+  .project-title { font-size: 14px; color: #444; line-height: 1.35; }
+  .tags { margin-top: 5px; }
+  .tag { display: inline-block; background: navy; color: #fff; font-size: 13px; padding: 1px 4px; margin: 1px 2px 1px 0; }
+  .project-summary { margin: 7px 0 0 43px; line-height: 1.45; color: #222; }
+  .project-actions { margin: 7px 0 0 43px; display: flex; gap: 5px; }
+  .details { display: none; margin: 9px 0 0 43px; border-top: 1px solid #808080; padding-top: 8px; }
+  .details.open { display: block; }
+  .detail-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 7px; }
+  .proj-meta { margin-top: 6px; font-size: 13px; color: #555; }
+  .win-footer-note { margin-top: 10px; font-size: 14px; color: #333; text-align: center; }
+  .show-more-row { text-align: center; margin: 4px 0 8px; }
 
   #pdf-frame { width: 100%; height: 420px; border: 1px solid #808080; background: #fff; }
-  .pdf-fallback { font-size: 11px; margin-top: 6px; }
+  .pdf-fallback { font-size: 15px; margin-top: 6px; }
 
   /* ---- Work-in-progress alert (styled like a real Windows message box: no minimize/maximize) ---- */
   .alert-body { display: flex; gap: 14px; align-items: flex-start; padding: 6px 4px; }
@@ -151,7 +193,7 @@
     border-radius: 50%;
     background: #ffcc00;
     display: flex; align-items: center; justify-content: center;
-    font-weight: bold; font-size: 20px; color: #000;
+    font-weight: bold; font-size: 24px; color: #000;
     border: 1px solid #806000;
   }
   .alert-actions { display: flex; justify-content: center; margin-top: 14px; }
@@ -171,12 +213,12 @@
   #start-btn { font-weight: bold; padding: 3px 10px 3px 6px; }
   #taskbar-sep { width: 2px; height: 24px; border-left: 1px solid #808080; border-right: 1px solid #fff; }
   #task-buttons { display: flex; gap: 3px; flex: 1; overflow-x: auto; }
-  .task-btn { min-width: 120px; max-width: 160px; text-align: left; font-size: 11px; padding: 2px 6px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  .task-btn { min-width: 120px; max-width: 160px; text-align: left; font-size: 15px; padding: 2px 6px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
   #clock {
     padding: 4px 10px;
     border-style: solid; border-width: 1px;
     border-color: #808080 #fff #fff #808080;
-    font-size: 11px;
+    font-size: 15px;
     background: #c0c0c0;
     min-width: 60px;
     text-align: center;
@@ -200,7 +242,7 @@
     padding: 5px 8px;
     text-decoration: none;
     color: #000;
-    font-size: 12px;
+    font-size: 16px;
   }
   #start-menu li a:hover { background: navy; color: #fff; }
   #start-menu li.sep { border-top: 1px solid #808080; margin-top: 2px; padding-top: 2px; }
@@ -209,7 +251,7 @@
     position: fixed; inset: 0;
     background: #000; color: #fff;
     font-family: "Courier New", monospace;
-    font-size: 13px;
+    font-size: 17px;
     padding: 24px;
     z-index: 999;
     white-space: pre-wrap;
@@ -256,12 +298,19 @@
 
     .title-bar-controls button { width: 28px; height: 24px; }
     .icon-minimize, .icon-maximize, .icon-close, .btn-box { transform: scale(1.3); }
-    button.win-action { padding: 8px 14px; font-size: 13px; }
+    button.win-action { padding: 8px 14px; font-size: 17px; }
     #start-btn { padding: 8px 14px; }
     .task-btn { min-width: 90px; padding: 6px 8px; }
     #clock { padding: 8px 10px; }
     #taskbar { height: 38px; }
     input[type="text"] { padding: 8px 6px; }
+
+    /* Project cards: collapse the two-column detail grid and drop the
+       indentation/file-badge that only make sense at desktop width */
+    .detail-grid { grid-template-columns: 1fr; }
+    .project-summary, .project-actions, .details { margin-left: 0; }
+    .project-head { gap: 7px; }
+    .file-icon { display: none; }
   }
 </style>
 </head>
@@ -305,10 +354,17 @@
       </div>
     </div>
     <div class="window-body">
-      <p><b>SHIVANI SRIVASTAVA</b><br>Senior Data Scientist &mdash; New Delhi, India</p>
-      <p>I collect strange questions and try to answer them with data. 5+ years building applied machine learning, GenAI, and behavioral-analytics systems across financial services, executive research, and environmental policy &mdash; risk models influencing collections workflows worth roughly $950M, early-warning systems built from satellite imagery, causal-inference studies on public policy interventions.</p>
-      <p>At Genpact I lead a team of 5 data scientists building risk classification, propensity-to-pay, and contact-strategy models across 6 enterprise clients. Before that, at ISB, I ran behavioral research spanning eye-tracking studies, long-form interviews, and Bayesian text analysis, while mentoring 12 interns.</p>
-      <p>My roots are in economics &mdash; an MSc in Environmental and Natural Resource Economics, with field research spanning air-pollution early-warning systems to causal evaluation of policy interventions.</p>
+      <p><b>SHIVANI SRIVASTAVA</b><br>Senior Data Scientist, New Delhi, India</p>
+      <p>I am a natural resource economist by training, and data is my poison of choice. Or dairy. The distinction is deliberately unclear.</p>
+
+  <p> I hesitate to call data analysis my “strength”, because I suspect most people analyse data whether they realise it or not. I am good at making that process more structured—using Python, R, and an unreasonable number of spreadsheets—but increasingly, so are LLMs. </p>
+
+<p> What I think I do particularly well is <b>connect things that were not originally designed to be connected</b> : methods from different fields, seemingly unrelated datasets, and ways of framing problems borrowed from disciplines far outside the one I started in. I like taking those pieces apart, finding the useful common thread, and putting them back together into a solution that is both rigorous and unconventional.</p>
+
+<p>I am also a massive admirer of Taylor Swift and Agatha Christie. Consequently, there are several Easter eggs, clues, and questionable decisions scattered throughout this website. Finding them is optional. I will, however, be quietly impressed if you do.</p>
+
+<p> As of today, I am open to full-time opportunities where I can work at the intersection of <i>unconventional data, rigorous analysis, and creative problem-solving</i> —particularly problems where the obvious method isn't necessarily the interesting one. </p>
+
       <fieldset>
         <legend>Focus</legend>
         <div class="field-row-stacked"><label>ML &middot; NLP &middot; Generative AI &middot; Decision Intelligence</label></div>
@@ -330,30 +386,258 @@
       </div>
     </div>
     <div class="window-body">
-      <div class="proj-item">
-        <span class="proj-tag">ML SYSTEMS</span>
-        <b>Collections risk &amp; propensity models</b>
-        Led a team of 5 building XGBoost and clustering-based risk classification, propensity-to-pay, and contact-strategy models across 6 enterprise clients &mdash; informing collections workflows tied to roughly $950M in enterprise revenue.
-        <span class="meta">Genpact &middot; 2024&ndash;2026</span>
+
+      <div class="intro">
+        <b>I collect strange questions and try to answer them with data.</b>
+        <p>The projects below are less about the tool I used and more about the connection I made: a problem, an unusual signal, a method borrowed from somewhere else, and what came out of putting them together.</p>
       </div>
-      <div class="proj-item">
-        <span class="proj-tag">DATA ENGINEERING</span>
-        <b>Entity resolution across power-plant databases</b>
-        Performed entity resolution across 6 disparate power-plant databases, identifying and linking duplicate and related records into a single canonical view.
-        <span class="meta">Genpact &middot; 2024&ndash;2026</span>
+
+      <div class="project">
+        <div class="project-head">
+          <div class="file-icon">PDF</div>
+          <div class="project-main">
+            <div class="project-question">Can Instagram tell us what a park is worth?</div>
+            <div class="project-title">Using Instagram Data on a Travel Cost Model to Approximate Value of Recreation in Urban Green Spaces: Lodhi Garden Case Study</div>
+            <div class="tags">
+              <span class="tag">ECONOMICS</span>
+              <span class="tag">SOCIAL MEDIA</span>
+              <span class="tag">ENVIRONMENTAL VALUATION</span>
+            </div>
+          </div>
+        </div>
+        <div class="project-summary">I combined a classical environmental-economics valuation method with social-media data to estimate something that isn't directly observable: the recreational value people derive from an urban green space.</div>
+        <div class="project-actions">
+          <button class="win-action" data-proj="lodhi-garden" onclick="toggleDetails(this)">Why this?</button>
+          <button class="win-action" data-proj="lodhi-garden" disabled title="Evidence coming soon" onclick="toggleDetails(this, true)">Show evidence</button>
+        </div>
+        <div class="details">
+          <div class="detail-grid">
+            <fieldset>
+              <legend>WHY THIS?</legend>
+              <p>I wondered whether people were already leaving behavioral traces of recreation online, and whether those traces could be connected to a classical Travel Cost Model.</p>
+            </fieldset>
+            <fieldset>
+              <legend>METHOD</legend>
+              <p>Instagram-derived visitation information plus travel-cost modeling to approximate recreational value for Lodhi Garden.</p>
+            </fieldset>
+          </div>
+          <div class="proj-meta">M.Sc. thesis &middot; TERI SAS &middot; 2021</div>
+        </div>
       </div>
-      <div class="proj-item">
-        <span class="proj-tag">GEOSPATIAL</span>
-        <b>Air-pollution early-warning dashboard</b>
-        Built an early-warning dashboard for domestic air pollution across Delhi NCR from satellite and geospatial data via Google Earth Engine. Applied Synthetic Control methodology to evaluate the causal efficacy of Delhi's GRAP scheme.
-        <span class="meta">CEEW &middot; Feb&ndash;Mar 2024</span>
+
+      <div class="project">
+        <div class="project-head">
+          <div class="file-icon">DB</div>
+          <div class="project-main">
+            <div class="project-question">Six datasets. Zero primary keys.</div>
+            <div class="project-title">Building an Entity Resolution Engine to Map Disparate Power-Plant Databases</div>
+            <div class="tags">
+              <span class="tag">ENTITY RESOLUTION</span>
+              <span class="tag">DATA ENGINEERING</span>
+              <span class="tag">RECORD LINKAGE</span>
+            </div>
+          </div>
+        </div>
+        <div class="project-summary">I built a process to identify and link entities across six datasets despite missing identifiers and incomplete data, including an efficient manual-validation layer.</div>
+        <div class="project-actions">
+          <button class="win-action" data-proj="entity-resolution" onclick="toggleDetails(this)">Why this?</button>
+          <button class="win-action" data-proj="entity-resolution" disabled title="Evidence coming soon" onclick="toggleDetails(this, true)">Show evidence</button>
+        </div>
+        <div class="details">
+          <div class="detail-grid">
+            <fieldset>
+              <legend>WHY THIS?</legend>
+              <p>Real-world datasets rarely arrive with the clean identifiers that textbook examples assume. The challenge was to create a reliable canonical view without pretending the missing information existed.</p>
+            </fieldset>
+            <fieldset>
+              <legend>METHOD</legend>
+              <p>Entity matching across six sources plus candidate generation and efficient manual validation for ambiguous records.</p>
+            </fieldset>
+          </div>
+          <div class="proj-meta">Genpact &middot; 2024&ndash;2026</div>
+        </div>
       </div>
-      <div class="proj-item">
-        <span class="proj-tag">BEHAVIORAL RESEARCH</span>
-        <b>Consumer behavior &amp; cognitive bias research</b>
-        Ran eye-tracking studies on advertisement engagement, long-form interviews on career transitions, and Bayesian text-sequencing analysis of stereotype-formation mechanisms; mentored a 12-person intern cohort.
-        <span class="meta">ISB &middot; 2021&ndash;2024</span>
+
+
+      <div class="project">
+        <div class="project-head">
+          <div class="file-icon">TXT</div>
+          <div class="project-main">
+            <div class="project-question">Can an earnings call reveal how much control a company thinks it has?</div>
+            <div class="project-title">Using Earnings Call Transcripts and LLMs to Identify Organizational Locus of Control</div>
+            <div class="tags">
+              <span class="tag">LLMs</span>
+              <span class="tag">NLP</span>
+              <span class="tag">PSYCHOLOGY</span>
+              <span class="tag">FINANCE</span>
+            </div>
+          </div>
+        </div>
+        <div class="project-summary">I used executive language in earnings calls as a behavioral signal for an otherwise abstract psychological construct: organizational locus of control.</div>
+        <div class="project-actions">
+          <button class="win-action" data-proj="earnings-call-locus" onclick="toggleDetails(this)">Why this?</button>
+          <button class="win-action" data-proj="earnings-call-locus" disabled title="Evidence coming soon" onclick="toggleDetails(this, true)">Show evidence</button>
+        </div>
+        <div class="details">
+          <div class="detail-grid">
+            <fieldset>
+              <legend>WHY THIS?</legend>
+              <p>Locus of control is psychological, while earnings calls are financial communications. The project asks whether language produced in the latter can act as evidence for the former.</p>
+            </fieldset>
+            <fieldset>
+              <legend>METHOD</legend>
+              <p>Earnings-call transcripts plus LLM-assisted language analysis to identify indicators associated with organizational locus of control.</p>
+            </fieldset>
+          </div>
+          <div class="proj-meta">Research project</div>
+        </div>
       </div>
+
+      <div class="project">
+        <div class="project-head">
+          <div class="file-icon">EYE</div>
+          <div class="project-main">
+            <div class="project-question">Where do people actually look?</div>
+            <div class="project-title">Using Eye-Tracking Surveys to Identify Areas of Interest to Viewers, Comparing Content Creator and Brand Language</div>
+            <div class="tags">
+              <span class="tag">EYE TRACKING</span>
+              <span class="tag">EXPERIMENTAL DESIGN</span>
+              <span class="tag">MARKETING</span>
+            </div>
+          </div>
+        </div>
+        <div class="project-summary">Instead of asking people what caught their attention, I measured where their attention actually went and examined how creator versus brand language affected it.</div>
+        <div class="project-actions">
+          <button class="win-action" data-proj="eye-tracking" onclick="toggleDetails(this)">Why this?</button>
+          <button class="win-action" data-proj="eye-tracking" disabled title="Evidence coming soon" onclick="toggleDetails(this, true)">Show evidence</button>
+        </div>
+        <div class="details">
+          <div class="detail-grid">
+            <fieldset>
+              <legend>WHY THIS?</legend>
+              <p>Stated attention and observed attention are not necessarily the same thing. Eye tracking provides a behavioral measure rather than relying entirely on what viewers say they noticed.</p>
+            </fieldset>
+            <fieldset>
+              <legend>METHOD</legend>
+              <p>Eye-tracking survey data plus areas-of-interest analysis and comparison of creator and brand language.</p>
+            </fieldset>
+          </div>
+          <div class="proj-meta">ISB &middot; Behavioral research</div>
+        </div>
+      </div>
+
+      <div class="show-more-row">
+        <button class="win-action" id="show-more-projects-btn" onclick="toggleMoreProjects()">&#9660; Show 3 more projects</button>
+      </div>
+
+      <div class="extra-projects" id="extra-projects" style="display:none;">
+
+
+      <div class="project">
+        <div class="project-head">
+          <div class="file-icon">BAY</div>
+          <div class="project-main">
+            <div class="project-question">What stereotypes do we form without realizing it?</div>
+            <div class="project-title">Bayesian Conjoints: Identifying Visual Stereotypes Formed by Review Consumption</div>
+            <div class="tags">
+              <span class="tag">BAYESIAN METHODS</span>
+              <span class="tag">CONJOINTS</span>
+              <span class="tag">VISUAL PERCEPTION</span>
+            </div>
+          </div>
+        </div>
+        <div class="project-summary">I used Bayesian conjoint methods to investigate how exposure to review content can shape visual associations and stereotypes.</div>
+        <div class="project-actions">
+          <button class="win-action" data-proj="bayesian-conjoints" onclick="toggleDetails(this)">Why this?</button>
+          <button class="win-action" data-proj="bayesian-conjoints" disabled title="Evidence coming soon" onclick="toggleDetails(this, true)">Show evidence</button>
+        </div>
+        <div class="details">
+          <div class="detail-grid">
+            <fieldset>
+              <legend>WHY THIS?</legend>
+              <p>The interesting question wasn't simply whether people preferred something, but whether repeated information consumption changes the visual associations they form.</p>
+            </fieldset>
+            <fieldset>
+              <legend>METHOD</legend>
+              <p>Conjoint-style experimental design plus Bayesian estimation to examine preference and stereotype formation.</p>
+            </fieldset>
+          </div>
+          <div class="proj-meta">ISB &middot; Behavioral research</div>
+        </div>
+      </div>
+
+
+
+      <div class="project">
+        <div class="project-head">
+          <div class="file-icon">ML</div>
+          <div class="project-main">
+            <div class="project-question">When a prediction has to become a decision.</div>
+            <div class="project-title">Customer Segmentation &rarr; Tiered ML Models &rarr; Customized Contact Strategies</div>
+            <div class="tags">
+              <span class="tag">MACHINE LEARNING</span>
+              <span class="tag">SEGMENTATION</span>
+              <span class="tag">DECISION INTELLIGENCE</span>
+            </div>
+          </div>
+        </div>
+        <div class="project-summary">I combined K-Modes segmentation with tiered ML models to move from identifying customer groups to determining how those groups should actually be approached.</div>
+        <div class="project-actions">
+          <button class="win-action" data-proj="customer-segmentation" onclick="toggleDetails(this)">Why this?</button>
+          <button class="win-action" data-proj="customer-segmentation" disabled title="Evidence coming soon" onclick="toggleDetails(this, true)">Show evidence</button>
+        </div>
+        <div class="details">
+          <div class="detail-grid">
+            <fieldset>
+              <legend>WHY THIS?</legend>
+              <p>A model is only useful if its output changes what someone does. The objective was therefore not just prediction, but translating model outputs into differentiated contact strategies.</p>
+            </fieldset>
+            <fieldset>
+              <legend>METHOD</legend>
+              <p>K-Modes customer segmentation plus tiered risk/propensity models and customized contact-strategy recommendations.</p>
+            </fieldset>
+          </div>
+          <div class="proj-meta">Genpact &middot; 2024&ndash;2026</div>
+        </div>
+      </div>
+
+      <div class="project">
+        <div class="project-head">
+          <div class="file-icon">AQI</div>
+          <div class="project-main">
+            <div class="project-question">Did a pollution policy actually work, or did the weather just get lucky?</div>
+            <div class="project-title">Using Satellite Data and Synthetic Control Methods to Evaluate Delhi's Graded Response Action Plan (GRAP)</div>
+            <div class="tags">
+              <span class="tag">CAUSAL INFERENCE</span>
+              <span class="tag">GEOSPATIAL</span>
+              <span class="tag">PUBLIC POLICY</span>
+            </div>
+          </div>
+        </div>
+        <div class="project-summary">I built an early-warning dashboard for air pollution across Delhi NCR and used a Synthetic Control approach to test whether Delhi's GRAP policy actually reduced pollution, or whether the observed drop could be explained by something else entirely.</div>
+        <div class="project-actions">
+          <button class="win-action" data-proj="ceew-grap" onclick="toggleDetails(this)">Why this?</button>
+          <button class="win-action" data-proj="ceew-grap" disabled title="Evidence coming soon" onclick="toggleDetails(this, true)">Show evidence</button>
+        </div>
+        <div class="details">
+          <div class="detail-grid">
+            <fieldset>
+              <legend>WHY THIS?</legend>
+              <p>Policy evaluations often conflate correlation with causation: pollution can drop for reasons that have nothing to do with the policy itself, like weather or a slowing economy. The goal was to separate the policy's actual effect from coincidence.</p>
+            </fieldset>
+            <fieldset>
+              <legend>METHOD</legend>
+              <p>Satellite and geospatial pollution data processed via Google Earth Engine, feeding an early-warning dashboard, plus Synthetic Control modeling to construct a counterfactual Delhi without GRAP.</p>
+            </fieldset>
+          </div>
+          <div class="proj-meta">CEEW &middot; Feb&ndash;Mar 2024</div>
+        </div>
+      </div>
+
+      </div>
+
+      <div class="win-footer-note">More projects can live behind the scenes. These are the ones that explain how I think.</div>
+
     </div>
   </div>
 
@@ -371,14 +655,14 @@
         <legend>Trajectory</legend>
         <div class="field-row-stacked">
           <label><b>Genpact</b><br>May 2024 &ndash; Jul 2026 &middot; Gurugram, India</label>
-          <label style="font-size:10px; color:#333; margin-top:2px;">Business Analyst &rarr; Data Scientist &rarr; Data Engineer</label>
+          <label style="font-size:14px; color:#333; margin-top:2px;">Business Analyst &rarr; Data Scientist &rarr; Data Engineer</label>
         </div>
         <div class="field-row-stacked"><label><b>Research Intern</b> &middot; CEEW<br>Feb &ndash; Mar 2024 &middot; New Delhi, India</label></div>
         <div class="field-row-stacked"><label><b>Research Assistant</b> &middot; ISB<br>Sep 2021 &ndash; Jan 2024 &middot; Hyderabad, India</label></div>
       </fieldset>
       <fieldset>
         <legend>Stack</legend>
-        <p style="margin:4px 0 0; font-size:11px;">Python &middot; R &middot; SQL &middot; Scikit-learn &middot; XGBoost &middot; Pandas &middot; Streamlit &middot; Shiny &middot; Power BI &middot; Tableau &middot; Google Earth Engine &middot; Knowledge Graphs &middot; AWS</p>
+        <p style="margin:4px 0 0; font-size:15px;">Python &middot; R &middot; SQL &middot; Scikit-learn &middot; XGBoost &middot; Pandas &middot; Streamlit &middot; Shiny &middot; Power BI &middot; Tableau &middot; Google Earth Engine &middot; Knowledge Graphs &middot; AWS</p>
       </fieldset>
       <fieldset>
         <legend>Leadership</legend>
@@ -419,7 +703,7 @@
     <div class="window-body">
       <p style="margin-bottom:8px;">Not everything makes the highlight reel. This is the rest of it.</p>
       <embed id="pdf-frame" src="assets/cv-of-failures.pdf" type="application/pdf">
-      <p class="pdf-fallback">If the preview above is blank (common on mobile browsers), <a href="assets/cv-of-failures.pdf" target="_blank">open the PDF directly</a>.</p>
+      <p class="pdf-fallback">If the preview above is blank (common on mobile browsers), <a href="assets/cv-of-failures.pdf" target="_blank" data-goatcounter-click="pdf-open-direct">open the PDF directly</a>.</p>
     </div>
   </div>
 
@@ -457,8 +741,8 @@
     <li><a href="#" onclick="handleIconTap('education'); toggleStart(); return false;">🎓 education.txt</a></li>
     <li><a href="#" onclick="handleIconTap('trash'); toggleStart(); return false;">🗑️ Recycle Bin</a></li>
     <li class="sep"><a href="#" onclick="handleIconTap('wip'); toggleStart(); return false;">🖌️ Paint</a></li>
-    <li class="sep"><a href="https://linkedin.com/in/shivanisrvstv" target="_blank">🔗 LinkedIn</a></li>
-    <li><a href="https://github.com/Shivani-Srivastava" target="_blank">🌐 GitHub profile</a></li>
+    <li class="sep"><a href="https://linkedin.com/in/shivanisrvstv" target="_blank" data-goatcounter-click="outbound-linkedin">🔗 LinkedIn</a></li>
+    <li><a href="https://github.com/Shivani-Srivastava" target="_blank" data-goatcounter-click="outbound-github">🌐 GitHub profile</a></li>
   </ul>
 </div>
 
@@ -538,15 +822,18 @@
       el.style.top = el.getAttribute('data-prev-top');
       el.style.left = el.getAttribute('data-prev-left');
       el.style.width = el.getAttribute('data-prev-width');
+      el.style.height = el.getAttribute('data-prev-height') || '';
       el.classList.remove('win-maximized');
       el.setAttribute('data-maximized', 'false');
     } else {
       el.setAttribute('data-prev-top', el.style.top);
       el.setAttribute('data-prev-left', el.style.left);
       el.setAttribute('data-prev-width', el.style.width);
+      el.setAttribute('data-prev-height', el.style.height);
       el.style.top = '10px';
       el.style.left = '10px';
       el.style.width = 'calc(100% - 20px)';
+      el.style.height = 'calc(100% - 20px)';
       el.classList.add('win-maximized');
       el.setAttribute('data-maximized', 'true');
     }
@@ -555,6 +842,13 @@
 
   function handleIconTap(id) {
     openWin(id);
+    if (window.goatcounter && window.goatcounter.count) {
+      window.goatcounter.count({
+        path: 'open-' + id,
+        title: winTitles[id] || id,
+        event: true
+      });
+    }
     if (isMobile()) {
       var el = document.getElementById('win-' + id);
       setTimeout(function() {
@@ -599,6 +893,44 @@
     w.addEventListener('mousedown', function() { if (!isMobile()) bringToFront(w.id.replace('win-', '')); });
   });
 
+  function toggleDetails(button, evidenceOnly) {
+    var details = button.parentElement.nextElementSibling;
+    var alreadyOpen = details.classList.contains('open');
+    document.querySelectorAll('.details').forEach(function(d) { d.classList.remove('open'); });
+    if (!alreadyOpen) {
+      details.classList.add('open');
+      if (window.goatcounter && window.goatcounter.count) {
+        window.goatcounter.count({
+          path: 'project-' + (button.getAttribute('data-proj') || 'unknown') + '-' + (evidenceOnly ? 'evidence' : 'why'),
+          title: 'Project detail: ' + (button.getAttribute('data-proj') || 'unknown'),
+          event: true
+        });
+      }
+      if (evidenceOnly) {
+        var evidence = details.querySelector('.evidence');
+        if (evidence) evidence.scrollIntoView({ behavior: reduceMotion ? 'auto' : 'smooth', block: 'nearest' });
+      }
+    }
+  }
+
+  function toggleMoreProjects() {
+    var extra = document.getElementById('extra-projects');
+    var btn = document.getElementById('show-more-projects-btn');
+    var opening = extra.style.display === 'none';
+    extra.style.display = opening ? 'block' : 'none';
+    btn.innerHTML = opening ? '&#9650; Show fewer projects' : '&#9660; Show 3 more projects';
+    if (window.goatcounter && window.goatcounter.count) {
+      window.goatcounter.count({
+        path: opening ? 'projects-show-more' : 'projects-show-fewer',
+        title: 'Projects: show more toggle',
+        event: true
+      });
+    }
+    if (opening) {
+      extra.scrollIntoView({ behavior: reduceMotion ? 'auto' : 'smooth', block: 'nearest' });
+    }
+  }
+
   function updateClock() {
     var now = new Date();
     var h = now.getHours() % 12 || 12;
@@ -608,6 +940,9 @@
   }
   updateClock();
   setInterval(updateClock, 10000);
+
+  // About should be the visually topmost window on startup, above Projects
+  bringToFront('about');
 </script>
 
 </body>

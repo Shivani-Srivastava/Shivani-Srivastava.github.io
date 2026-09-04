@@ -8,6 +8,11 @@
 <script data-goatcounter="https://shivanisrvstv.goatcounter.com/count"
         async src="//gc.zgo.at/count.js"></script>
 
+
+<!-- IF YOU ARE READING THIS, YOU ARE ON THE WRONG PAGE, YOU SHOULD BE LOOKING AT THE OUTPUT !-->        
+<!-- AND IF YOU ARE INDEED INTERESTED IN THIS SOURCE CODE I THINK YOU SHOULD EMAIL ME TOO. !-->   
+
+        
 <style>
   * { box-sizing: border-box; }
   html, body {
@@ -56,15 +61,37 @@
                 inset -2px -2px 0 0 #808080, inset 2px 2px 0 0 #dfdfdf;
     padding: 3px;
     z-index: 5;
+    display: flex;
+    flex-direction: column;
+    min-width: 260px;
+    min-height: 140px;
+    /* No overflow was ever set here, so it defaulted to visible — meaning
+       any child content wider or taller than the window (a long unbroken
+       title, a fixed-width element, anything) could render straight past
+       the window's own border. This is the hard clip that actually
+       contains a window's content to itself. */
+    overflow: hidden;
   }
-  .win-about     { width: 420px; top: 40px;  left: 130px; }
-  .win-work      { width: 640px; top: 60px;  left: 380px; }
+  .win-about     { width: 420px; top: 86px;  left: 130px; }
+  .win-work      { width: 600px; top: 86px;  left: 566px; }
   .win-career    { width: 360px; top: 340px; left: 420px; display: none; }
   .win-education { width: 380px; top: 120px; left: 200px; display: none; }
   .win-trash     { width: 480px; top: 100px; left: 260px; display: none; }
   .win-wip       { width: 320px; top: 160px; left: 500px; display: none; }
-  .window.win-maximized { display: flex; flex-direction: column; }
-  .window.win-maximized .window-body { flex: 1; max-height: none; overflow-y: auto; }
+
+  /* Corner resize handle: drag to resize like a normal desktop window.
+     Only meaningful on desktop (absolute-positioned, freely sized windows);
+     hidden on mobile where windows are full-width stacked blocks. */
+  .resize-handle {
+    position: absolute;
+    right: 1px; bottom: 1px;
+    width: 14px; height: 14px;
+    cursor: nwse-resize;
+    touch-action: none;
+    background:
+      linear-gradient(135deg, transparent 0 40%, #808080 40% 46%, transparent 46% 60%, #808080 60% 66%, transparent 66% 80%, #808080 80% 86%, transparent 86%);
+    z-index: 6;
+  }
 
   .title-bar {
     background: linear-gradient(90deg, #000080, #1084d0);
@@ -109,7 +136,15 @@
   .icon-close::before { transform: rotate(45deg); }
   .icon-close::after { transform: rotate(-45deg); }
 
-  .window-body { padding: 8px; max-height: 320px; overflow-y: auto; -webkit-overflow-scrolling: touch; }
+  .window-body {
+    padding: 8px; max-height: 320px; overflow-y: auto; overflow-x: hidden;
+    -webkit-overflow-scrolling: touch; flex-shrink: 1;
+    overflow-wrap: break-word; word-break: break-word;
+  }
+  /* Once a window has an explicit height (manually resized, or maximized),
+     the body should flex to fill it and scroll internally rather than
+     staying capped at the default 320px. */
+  .window.win-sized .window-body { flex: 1 1 auto; min-height: 0; max-height: none; }
   .window-body p { margin: 0 0 8px; line-height: 1.5; }
 
   fieldset { border: 1px solid; border-color: #808080 #fff #fff #808080; margin: 8px 0 0; padding: 8px 6px 6px; }
@@ -224,6 +259,22 @@
     text-align: center;
   }
 
+  #back-to-top {
+    display: none;
+    position: fixed;
+    right: 12px; bottom: 46px;
+    width: 40px; height: 40px;
+    background: #c0c0c0;
+    border-style: solid; border-width: 2px;
+    border-color: #fff #000 #000 #fff;
+    align-items: center; justify-content: center;
+    font-size: 16px;
+    z-index: 150;
+    cursor: pointer;
+  }
+  #back-to-top:active { border-color: #000 #fff #fff #000; }
+  #back-to-top.show { display: flex; }
+
   #start-menu {
     position: fixed;
     bottom: 30px; left: 2px;
@@ -246,6 +297,45 @@
   }
   #start-menu li a:hover { background: navy; color: #fff; }
   #start-menu li.sep { border-top: 1px solid #808080; margin-top: 2px; padding-top: 2px; }
+
+  #calendar-popup {
+    position: fixed;
+    bottom: 30px; right: 4px;
+    width: 230px;
+    z-index: 200;
+    display: none;
+    background: #c0c0c0;
+    border-style: solid; border-width: 2px;
+    border-color: #dfdfdf #000 #000 #dfdfdf;
+    padding: 6px;
+  }
+  #calendar-popup.open { display: block; }
+  .calendar-header {
+    font-size: 13px;
+    line-height: 1.4;
+    background: #fff;
+    border: 1px solid; border-color: #808080 #fff #fff #808080;
+    padding: 6px;
+    margin-bottom: 6px;
+  }
+  .calendar-header a { color: #000080; }
+  .calendar-nav {
+    display: flex; align-items: center; justify-content: space-between;
+    margin-bottom: 4px; font-size: 14px; font-weight: bold;
+  }
+  .calendar-nav button {
+    width: 22px; height: 20px; padding: 0; font-size: 12px;
+    background: #c0c0c0;
+    border-style: solid; border-width: 1px;
+    border-color: #fff #000 #000 #fff;
+  }
+  .calendar-nav button:active { border-color: #000 #fff #fff #000; }
+  .calendar-grid { width: 100%; border-collapse: collapse; font-size: 13px; text-align: center; }
+  .calendar-grid th { font-weight: bold; padding: 2px 0; color: #000080; }
+  .calendar-grid td { padding: 3px 0; }
+  .calendar-grid td.today { background: navy; color: #fff; font-weight: bold; }
+
+  #clock { cursor: pointer; }
 
   #boot-screen {
     position: fixed; inset: 0;
@@ -293,8 +383,10 @@
     .title-bar { cursor: default; }
     .window-body { max-height: none; overflow-y: visible; }
 
-    /* Maximize doesn't mean anything once windows are already full-width stacked blocks */
+    /* Maximize, manual resize, and tiling don't mean anything once windows
+       are already full-width stacked blocks */
     .btn-maximize { display: none; }
+    .resize-handle { display: none; }
 
     .title-bar-controls button { width: 28px; height: 24px; }
     .icon-minimize, .icon-maximize, .icon-close, .btn-box { transform: scale(1.3); }
@@ -318,10 +410,11 @@
 
 <div id="boot-screen">Starting Shivani98...</div>
 <script>
+  var mobileBoot = window.matchMedia('(max-width: 800px)').matches;
   setTimeout(function() {
     var b = document.getElementById('boot-screen');
     if (b) b.style.display = 'none';
-  }, 1200);
+  }, mobileBoot ? 600 : 1200);
 </script>
 
 <div id="desktop">
@@ -374,6 +467,7 @@
         <div class="field-row-stacked"><label>shivani.srvstv.work@gmail.com &middot; github.com/Shivani-Srivastava</label></div>
       </fieldset>
     </div>
+    <div class="resize-handle" onpointerdown="startResize(event, 'about')"></div>
   </div>
 
   <div class="window win-work" id="win-work">
@@ -639,6 +733,7 @@
       <div class="win-footer-note">More projects can live behind the scenes. These are the ones that explain how I think.</div>
 
     </div>
+    <div class="resize-handle" onpointerdown="startResize(event, 'work')"></div>
   </div>
 
   <div class="window win-career" id="win-career">
@@ -670,6 +765,7 @@
         <div class="field-row-stacked"><label>Mentored 12 interns &mdash; ISB</label></div>
       </fieldset>
     </div>
+    <div class="resize-handle" onpointerdown="startResize(event, 'career')"></div>
   </div>
 
   <div class="window win-education" id="win-education">
@@ -689,6 +785,7 @@
         <div class="field-row-stacked"><label>B.A. (Hons.) Economics &mdash; Banaras Hindu University (2016&ndash;19)</label></div>
       </fieldset>
     </div>
+    <div class="resize-handle" onpointerdown="startResize(event, 'education')"></div>
   </div>
 
   <div class="window win-trash" id="win-trash">
@@ -705,11 +802,12 @@
       <embed id="pdf-frame" src="assets/cv-of-failures.pdf" type="application/pdf">
       <p class="pdf-fallback">If the preview above is blank (common on mobile browsers), <a href="assets/cv-of-failures.pdf" target="_blank" data-goatcounter-click="pdf-open-direct">open the PDF directly</a>.</p>
     </div>
+    <div class="resize-handle" onpointerdown="startResize(event, 'trash')"></div>
   </div>
 
   <!-- Work-in-progress alert: Start-menu only, no desktop icon. Styled like a real
-       Windows message box, so only a close button — minimize/maximize don't apply
-       to a modal alert. -->
+       Windows message box, so only a close button — minimize/maximize/resize don't
+       apply to a modal alert. -->
   <div class="window win-wip" id="win-wip">
     <div class="title-bar">
       <div class="title-bar-text">Alert</div>
@@ -746,11 +844,23 @@
   </ul>
 </div>
 
+<div id="calendar-popup">
+  <div class="calendar-header">Schedule time with me, email @ <a href="mailto:shivani.srvstv.work@gmail.com">shivani.srvstv.work@gmail.com</a></div>
+  <div class="calendar-nav">
+    <button onclick="changeCalendarMonth(-1)" aria-label="Previous month">&lt;</button>
+    <span id="calendar-month-label"></span>
+    <button onclick="changeCalendarMonth(1)" aria-label="Next month">&gt;</button>
+  </div>
+  <table class="calendar-grid" id="calendar-grid"></table>
+</div>
+
+<button id="back-to-top" aria-label="Back to top" onclick="scrollToTop()">&#9650;</button>
+
 <div id="taskbar">
   <button id="start-btn" onclick="toggleStart()">⊞ Start</button>
   <div id="taskbar-sep"></div>
   <div id="task-buttons"></div>
-  <div id="clock">--:--</div>
+  <div id="clock" onclick="toggleCalendar()" title="View calendar / schedule time">--:--</div>
 </div>
 
 <script>
@@ -823,8 +933,13 @@
       el.style.left = el.getAttribute('data-prev-left');
       el.style.width = el.getAttribute('data-prev-width');
       el.style.height = el.getAttribute('data-prev-height') || '';
-      el.classList.remove('win-maximized');
+      if (el.getAttribute('data-manually-resized') !== 'true') {
+        el.classList.remove('win-sized');
+      }
       el.setAttribute('data-maximized', 'false');
+      if (window.goatcounter && window.goatcounter.count) {
+        window.goatcounter.count({ path: 'restore-window-' + id, title: 'Restore: ' + id, event: true });
+      }
     } else {
       el.setAttribute('data-prev-top', el.style.top);
       el.setAttribute('data-prev-left', el.style.left);
@@ -834,10 +949,115 @@
       el.style.left = '10px';
       el.style.width = 'calc(100% - 20px)';
       el.style.height = 'calc(100% - 20px)';
-      el.classList.add('win-maximized');
+      el.classList.add('win-sized');
       el.setAttribute('data-maximized', 'true');
+      if (window.goatcounter && window.goatcounter.count) {
+        window.goatcounter.count({ path: 'maximize-window-' + id, title: 'Maximize: ' + id, event: true });
+      }
     }
     bringToFront(id);
+  }
+
+  // ---- Manual resize (drag from the bottom-right corner handle) ----
+  function startResize(e, id) {
+    if (isMobile()) return;
+    e.preventDefault();
+    e.stopPropagation();
+    var el = document.getElementById('win-' + id);
+    var handle = e.currentTarget;
+    bringToFront(id);
+
+    // Pin the window's exact current rendered size before switching it into
+    // "sized" mode (which changes how the body is capped/scrolled) — without
+    // this, the window visibly jumps the instant you grab the handle, since
+    // win-sized removes the default 320px content cap.
+    // Rounded to whole pixels: getBoundingClientRect() returns fractional
+    // values (e.g. 420.34px), and setting a window's size to a fractional
+    // value leaves a hairline subpixel seam at its edge where whatever sits
+    // behind it (the desktop icons) can bleed through.
+    var rect = el.getBoundingClientRect();
+    var startWidth = Math.round(rect.width), startHeight = Math.round(rect.height);
+    el.style.width = startWidth + 'px';
+    el.style.height = startHeight + 'px';
+    el.classList.add('win-sized');
+
+    var startX = e.clientX, startY = e.clientY;
+
+    // Pointer capture keeps this handle receiving move/up events for this
+    // pointer no matter where it travels — including outside the window
+    // bounds or the browser viewport entirely. Without it (plain mouse
+    // events on document), releasing the button off-page means the
+    // "mouseup" never fires, so the resize keeps running on any later
+    // mouse movement anywhere on the page. That was the glitch.
+    if (handle.setPointerCapture) {
+      try { handle.setPointerCapture(e.pointerId); } catch (err) {}
+    }
+
+    function onMove(ev) {
+      var newWidth = Math.max(260, Math.round(startWidth + (ev.clientX - startX)));
+      var newHeight = Math.max(140, Math.round(startHeight + (ev.clientY - startY)));
+      el.style.width = newWidth + 'px';
+      el.style.height = newHeight + 'px';
+    }
+    function onEnd() {
+      handle.removeEventListener('pointermove', onMove);
+      handle.removeEventListener('pointerup', onEnd);
+      handle.removeEventListener('pointercancel', onEnd);
+      if (handle.releasePointerCapture) {
+        try { handle.releasePointerCapture(e.pointerId); } catch (err) {}
+      }
+      el.setAttribute('data-manually-resized', 'true');
+      if (window.goatcounter && window.goatcounter.count) {
+        window.goatcounter.count({ path: 'resize-window-' + id, title: 'Resized: ' + id, event: true });
+      }
+    }
+    handle.addEventListener('pointermove', onMove);
+    handle.addEventListener('pointerup', onEnd);
+    handle.addEventListener('pointercancel', onEnd);
+  }
+
+  // ---- Taskbar clock -> calendar / scheduling popup ----
+  var calendarDate = new Date();
+  var monthNames = ['January','February','March','April','May','June','July','August','September','October','November','December'];
+
+  function toggleCalendar() {
+    var panel = document.getElementById('calendar-popup');
+    var opening = !panel.classList.contains('open');
+    document.getElementById('start-menu').classList.remove('open');
+    panel.classList.toggle('open');
+    if (opening) {
+      calendarDate = new Date();
+      renderCalendar();
+      if (window.goatcounter && window.goatcounter.count) {
+        window.goatcounter.count({ path: 'open-calendar', title: 'Calendar / schedule popup', event: true });
+      }
+    }
+  }
+
+  function changeCalendarMonth(delta) {
+    calendarDate.setMonth(calendarDate.getMonth() + delta);
+    renderCalendar();
+  }
+
+  function renderCalendar() {
+    var year = calendarDate.getFullYear(), month = calendarDate.getMonth();
+    document.getElementById('calendar-month-label').textContent = monthNames[month] + ' ' + year;
+
+    var firstDay = new Date(year, month, 1).getDay();
+    var daysInMonth = new Date(year, month + 1, 0).getDate();
+    var today = new Date();
+
+    var html = '<tr><th>S</th><th>M</th><th>T</th><th>W</th><th>T</th><th>F</th><th>S</th></tr><tr>';
+    for (var i = 0; i < firstDay; i++) html += '<td></td>';
+    var col = firstDay;
+    for (var d = 1; d <= daysInMonth; d++) {
+      var isToday = d === today.getDate() && month === today.getMonth() && year === today.getFullYear();
+      html += '<td' + (isToday ? ' class="today"' : '') + '>' + d + '</td>';
+      col++;
+      if (col === 7) { html += '</tr><tr>'; col = 0; }
+    }
+    html += '</tr>';
+    document.getElementById('calendar-grid').innerHTML = html;
   }
 
   function handleIconTap(id) {
@@ -858,7 +1078,12 @@
   }
 
   function toggleStart() {
-    document.getElementById('start-menu').classList.toggle('open');
+    var menu = document.getElementById('start-menu');
+    var opening = !menu.classList.contains('open');
+    menu.classList.toggle('open');
+    if (opening && window.goatcounter && window.goatcounter.count) {
+      window.goatcounter.count({ path: 'open-start-menu', title: 'Start menu', event: true });
+    }
   }
   document.addEventListener('click', function(e) {
     var menu = document.getElementById('start-menu');
@@ -866,31 +1091,57 @@
     if (menu.classList.contains('open') && !menu.contains(e.target) && e.target !== btn) {
       menu.classList.remove('open');
     }
+    var cal = document.getElementById('calendar-popup');
+    var clock = document.getElementById('clock');
+    if (cal.classList.contains('open') && !cal.contains(e.target) && e.target !== clock) {
+      cal.classList.remove('open');
+    }
   });
 
   function makeDraggable(winEl) {
     var titleBar = winEl.querySelector('.title-bar');
-    var dragging = false, offX = 0, offY = 0;
-    titleBar.addEventListener('mousedown', function(e) {
+    var offX = 0, offY = 0;
+
+    titleBar.addEventListener('pointerdown', function(e) {
       if (isMobile()) return;
       if (e.target.closest('button')) return;
-      dragging = true;
       var rect = winEl.getBoundingClientRect();
-      offX = e.clientX - rect.left;
-      offY = e.clientY - rect.top;
+      // Rounded for the same reason as resize: fractional offsets produce
+      // fractional left/top values later, which can leave a subpixel seam
+      // at the window's edge where the desktop icons behind it bleed through.
+      offX = Math.round(e.clientX - rect.left);
+      offY = Math.round(e.clientY - rect.top);
       bringToFront(winEl.id.replace('win-', ''));
       e.preventDefault();
+
+      // Pointer capture (same fix as resize): keeps the title bar receiving
+      // move/up events for this drag even if the pointer leaves the window
+      // or the browser viewport, so releasing the mouse off-page can't leave
+      // the window stuck following the cursor.
+      if (titleBar.setPointerCapture) {
+        try { titleBar.setPointerCapture(e.pointerId); } catch (err) {}
+      }
+
+      function onMove(ev) {
+        winEl.style.left = Math.max(0, Math.round(ev.clientX - offX)) + 'px';
+        winEl.style.top = Math.max(0, Math.round(ev.clientY - offY)) + 'px';
+      }
+      function onEnd() {
+        titleBar.removeEventListener('pointermove', onMove);
+        titleBar.removeEventListener('pointerup', onEnd);
+        titleBar.removeEventListener('pointercancel', onEnd);
+        if (titleBar.releasePointerCapture) {
+          try { titleBar.releasePointerCapture(e.pointerId); } catch (err) {}
+        }
+      }
+      titleBar.addEventListener('pointermove', onMove);
+      titleBar.addEventListener('pointerup', onEnd);
+      titleBar.addEventListener('pointercancel', onEnd);
     });
-    document.addEventListener('mousemove', function(e) {
-      if (!dragging || isMobile()) return;
-      winEl.style.left = Math.max(0, e.clientX - offX) + 'px';
-      winEl.style.top = Math.max(0, e.clientY - offY) + 'px';
-    });
-    document.addEventListener('mouseup', function() { dragging = false; });
   }
   document.querySelectorAll('.window').forEach(makeDraggable);
   document.querySelectorAll('.window').forEach(function(w) {
-    w.addEventListener('mousedown', function() { if (!isMobile()) bringToFront(w.id.replace('win-', '')); });
+    w.addEventListener('pointerdown', function() { if (!isMobile()) bringToFront(w.id.replace('win-', '')); });
   });
 
   function toggleDetails(button, evidenceOnly) {
@@ -941,8 +1192,35 @@
   updateClock();
   setInterval(updateClock, 10000);
 
-  // About should be the visually topmost window on startup, above Projects
+  // About should be the visually topmost window on startup, above Projects (desktop)
   bringToFront('about');
+
+  // On mobile, every window starts hidden until tapped — a first-time mobile
+  // visitor would otherwise land on a bare icon grid with zero content.
+  // Auto-open About so there's something to read immediately. No scrollIntoView
+  // (already at top) and no GoatCounter event (not a real user click).
+  if (isMobile()) {
+    openWin('about');
+  }
+
+  // Mobile-only "back to top" shortcut, since the page is a long single scroll
+  // once Projects is expanded. Hidden entirely on desktop.
+  window.addEventListener('scroll', function() {
+    var btn = document.getElementById('back-to-top');
+    if (!btn) return;
+    if (isMobile() && window.scrollY > 400) {
+      btn.classList.add('show');
+    } else {
+      btn.classList.remove('show');
+    }
+  }, { passive: true });
+
+  function scrollToTop() {
+    window.scrollTo({ top: 0, behavior: reduceMotion ? 'auto' : 'smooth' });
+    if (window.goatcounter && window.goatcounter.count) {
+      window.goatcounter.count({ path: 'mobile-back-to-top', title: 'Back to top', event: true });
+    }
+  }
 </script>
 
 </body>
